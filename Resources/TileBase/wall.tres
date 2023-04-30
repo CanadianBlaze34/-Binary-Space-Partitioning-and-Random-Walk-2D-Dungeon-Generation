@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="TileBase" load_steps=2 format=3 uid="uid://c0jdr7mqwn50r"]
+
+[ext_resource type="Script" path="res://Scripts/resource/tile_base.gd" id="1_41yub"]
+
+[resource]
+script = ExtResource("1_41yub")
+source_id = 0
+atlas_coords = Vector2i(1, 0)
+alternative_tile = 0
+layer = 0

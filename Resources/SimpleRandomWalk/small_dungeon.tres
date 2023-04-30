@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SimpleRandomWalkResource" load_steps=2 format=3 uid="uid://c27q5kftsg03s"]
+
+[ext_resource type="Script" path="res://Scripts/resource/simple_random_walk_resource.gd" id="1_f8xp7"]
+
+[resource]
+script = ExtResource("1_f8xp7")
+iterations = 20
+steps = 20
+start_randomly_each_iteration = true
+randomize_ = true
+seed_ = "34715993697983876"

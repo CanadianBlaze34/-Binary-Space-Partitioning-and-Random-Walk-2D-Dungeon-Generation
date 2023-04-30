@@ -1,0 +1,145 @@
+[gd_scene load_steps=18 format=3 uid="uid://bg4qhjl08x6s"]
+
+[ext_resource type="Script" path="res://Scripts/main.gd" id="1_ac27r"]
+[ext_resource type="Script" path="res://Scripts/simple_random_walk_dungeon_generator.gd" id="1_n8wnt"]
+[ext_resource type="TileSet" uid="uid://c0gbaaht6gr76" path="res://Resources/tileset/dungeon.tres" id="2_8embm"]
+[ext_resource type="Script" path="res://Scripts/tile_map_visualizer.gd" id="3_pd314"]
+[ext_resource type="Resource" uid="uid://dgnlmdx8c7uo4" path="res://Resources/SimpleRandomWalk/island.tres" id="5_d1uo1"]
+[ext_resource type="Script" path="res://Scripts/resource/simple_random_walk_resource.gd" id="6_bypy2"]
+[ext_resource type="Script" path="res://Scripts/resource/random_properties.gd" id="6_lxdkn"]
+[ext_resource type="Script" path="res://Scripts/corridor_first_dungeon_generator.gd" id="6_n8co2"]
+[ext_resource type="Script" path="res://Scripts/camera_zooming.gd" id="6_q5wow"]
+[ext_resource type="Script" path="res://Scripts/room_first_dungeon_generator.gd" id="8_hvnra"]
+
+[sub_resource type="Resource" id="Resource_2bgee"]
+script = ExtResource("6_lxdkn")
+randomize_ = true
+seed_ = "34715993697983876"
+
+[sub_resource type="Resource" id="Resource_f3m1w"]
+script = ExtResource("6_lxdkn")
+randomize_ = true
+seed_ = "34715993697983876"
+
+[sub_resource type="Resource" id="Resource_out60"]
+script = ExtResource("6_bypy2")
+iterations = 10
+steps = 30
+start_randomly_each_iteration = false
+
+[sub_resource type="Resource" id="Resource_xxwes"]
+script = ExtResource("6_lxdkn")
+randomize_ = true
+seed_ = "34715993697983876"
+
+[sub_resource type="Resource" id="Resource_15tmk"]
+script = ExtResource("6_lxdkn")
+randomize_ = true
+seed_ = "34715993697983876"
+
+[sub_resource type="Resource" id="Resource_goiry"]
+script = ExtResource("6_bypy2")
+iterations = 50
+steps = 15
+start_randomly_each_iteration = true
+
+[sub_resource type="Resource" id="Resource_s53n1"]
+script = ExtResource("6_lxdkn")
+randomize_ = true
+seed_ = "34715993697983876"
+
+[node name="Main" type="Node"]
+script = ExtResource("1_ac27r")
+
+[node name="Dungeon" type="TileMap" parent="."]
+tile_set = ExtResource("2_8embm")
+format = 2
+layer_0/name = "floor"
+script = ExtResource("3_pd314")
+metadata/_edit_lock_ = true
+
+[node name="DungeonGenerator" type="Node" parent="." node_paths=PackedStringArray("_tile_map_visualizer")]
+script = ExtResource("1_n8wnt")
+_random_dungeon = ExtResource("5_d1uo1")
+_dungeon_randomize = SubResource("Resource_2bgee")
+_tile_map_visualizer = NodePath("../Dungeon")
+metadata/_edit_lock_ = true
+
+[node name="CorridorFirstDungeonGenerator" type="Node" parent="." node_paths=PackedStringArray("_tile_map_visualizer")]
+script = ExtResource("6_n8co2")
+_corridor_length = 20
+_corridor_count = 10
+_corridor_randomize = SubResource("Resource_f3m1w")
+_random_dungeon = SubResource("Resource_out60")
+_dungeon_randomize = SubResource("Resource_xxwes")
+_tile_map_visualizer = NodePath("../Dungeon")
+
+[node name="RoomsFirstDungeonGenerator" type="Node" parent="." node_paths=PackedStringArray("_tile_map_visualizer")]
+script = ExtResource("8_hvnra")
+_min_room_width = 10
+_min_room_height = 10
+_dungeon_width = 70
+_dungeon_height = 70
+_room_offset = 2
+_simple_random_walk_rooms = true
+_corridor_randomize = SubResource("Resource_15tmk")
+_random_dungeon = SubResource("Resource_goiry")
+_dungeon_randomize = SubResource("Resource_s53n1")
+_tile_map_visualizer = NodePath("../Dungeon")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+metadata/_edit_lock_ = true
+
+[node name="FrontCanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Generate Room" type="Button" parent="FrontCanvasLayer"]
+offset_left = 1100.0
+offset_top = 40.0
+offset_right = 1233.0
+offset_bottom = 87.0
+theme_override_font_sizes/font_size = 28
+text = "Generate
+Rooms"
+metadata/_edit_lock_ = true
+
+[node name="Generate Corridor" type="Button" parent="FrontCanvasLayer"]
+offset_left = 946.0
+offset_top = 40.0
+offset_right = 1081.0
+offset_bottom = 126.0
+theme_override_font_sizes/font_size = 28
+text = "Generate
+Corridors"
+metadata/_edit_lock_ = true
+
+[node name="Generate Rooms First" type="Button" parent="FrontCanvasLayer"]
+offset_left = 1100.0
+offset_top = 147.0
+offset_right = 1235.0
+offset_bottom = 233.0
+theme_override_font_sizes/font_size = 28
+text = "Generate
+Rooms
+First"
+metadata/_edit_lock_ = true
+
+[node name="BackCanvasLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="ColorRect" type="ColorRect" parent="BackCanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0901961, 0.0470588, 0.0627451, 1)
+metadata/_edit_lock_ = true
+
+[node name="Zoom" type="Node" parent="." node_paths=PackedStringArray("_camera")]
+script = ExtResource("6_q5wow")
+_camera = NodePath("../Camera2D")
+_clamp = Vector2(0.05, 8)
+
+[connection signal="pressed" from="FrontCanvasLayer/Generate Room" to="DungeonGenerator" method="_on_button_pressed"]
+[connection signal="pressed" from="FrontCanvasLayer/Generate Corridor" to="CorridorFirstDungeonGenerator" method="_on_generate_corridor_pressed"]
+[connection signal="pressed" from="FrontCanvasLayer/Generate Rooms First" to="RoomsFirstDungeonGenerator" method="_on_generate_rooms_first_pressed"]
